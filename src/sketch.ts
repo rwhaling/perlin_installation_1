@@ -79,27 +79,27 @@ export const numericParameterDefs = {
     "min": 1,
     "max": 5,
     "step": 0.5,
-    "defaultValue": 1,
+    "defaultValue": 2,
   },
   // New parameter for configurable lines per region
   "linesPerRegion": {
     "min": 1,
     "max": 10,
     "step": 1,
-    "defaultValue": 4, // Default to current behavior (2 lines)
+    "defaultValue": 5, // Default to current behavior (2 lines)
   },
   // New parameters for line length control
   "lineMinLength": {
     "min": 10,
     "max": 200,
     "step": 5,
-    "defaultValue": 20, // Default to current hardcoded value
+    "defaultValue": 60, // Default to current hardcoded value
   },
   "lineMaxLength": {
     "min": 50,
     "max": 400,
     "step": 5,
-    "defaultValue": 120, // Default maximum length
+    "defaultValue": 250, // Default maximum length
   },
 };
 
