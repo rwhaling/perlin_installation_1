@@ -425,6 +425,11 @@ export function createSketch(parameterStore: ParameterStore) {
     p.draw = function() {
       frameCount++;
 
+      // Simulate consistent 60fps timing instead of using actual millis
+      const frameRate = 60; // Simulate 60fps
+      const deltaTimePerFrame = 1000 / frameRate; // ms per frame at 60fps
+      const currentTime = frameCount * deltaTimePerFrame;
+      
       p.translate(-p.width/2, -p.height/2);
       if (frameCount % 5 == 0) {
         // draw a white rectangle over the entire canvas
@@ -471,8 +476,8 @@ export function createSketch(parameterStore: ParameterStore) {
         p.rect(region[0], region[1], region[2] - region[0], region[3] - region[1]);
       }
 
-      // Get current time to check line lifetimes
-      const currentTime = p.millis();
+      // Get simulated time instead of actual millis for line lifetimes
+      // const currentTime = p.millis();
 
       // Update our lines array to match the desired linesPerRegion parameter
       const desiredLinesPerRegion = Math.floor(parameterStore.linesPerRegion);
@@ -706,7 +711,7 @@ export function createSketch(parameterStore: ParameterStore) {
       p.blendMode(p.BLEND as any);
       p.pop();
       
-      prevTime = currentTime;
+      prevTime = currentTime - deltaTimePerFrame; // Previous frame's simulated time
     };
   };
 }
