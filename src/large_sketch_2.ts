@@ -346,22 +346,22 @@ export function createSketch(parameterStore: ParameterStore) {
     };
     
     p.setup = function() {
-      p.createCanvas(1080, 1920, p.WEBGL);
+      p.createCanvas(400, 800, p.WEBGL);
       p.translate(-p.width/2, -p.height/2); // Move to top-left for image drawing
       
       // Create particle layer with same dimensions and renderer
-      particleLayer = p.createGraphics(1080, 1920, p.WEBGL);
+      particleLayer = p.createGraphics(400, 800, p.WEBGL);
       particleLayer.setAttributes({ alpha: true });
       particleLayer.translate(-p.width/2, -p.height/2);
-      lineLayer = p.createGraphics(1080, 1920, p.WEBGL);   
+      lineLayer = p.createGraphics(400, 800, p.WEBGL);   
       lineLayer.setAttributes({ alpha: true });
       lineLayer.translate(-p.width/2, -p.height/2);
 
-      regions = [  // 4 regions, scaled for 1080 x 1920 canvas, coordinates as multiples of 20
-        [140, 160, 940, 460],   // Region 1: 800px width × 300px height
-        [140, 600, 940, 900],   // Region 2: 800px width × 300px height
-        [140, 1040, 940, 1340], // Region 3: 800px width × 300px height
-        [140, 1480, 940, 1780]  // Region 4: 800px width × 300px height
+      regions = [  // 4 regions, 300 x 125, 50px padding l/r, 50x padding t/b
+        [50, 75, 350, 200],
+        [50, 250, 350, 375],
+        [50, 425, 350, 550],
+        [50, 600, 350, 725]
       ]
       lines = [];
       lineStepFactor = [];

@@ -13,6 +13,7 @@ import { createSketch as createQrSketch6, numericParameterDefs as qrNumericParam
 import { createSketch as createQrSketch7, numericParameterDefs as qrNumericParameterDefs7, initParameterStore as initQrParameterStore7 } from "./sketch_qr_7";
 import { createSketch as createPrintSketch1, numericParameterDefs as printNumericParameterDefs1, initParameterStore as initPrintParameterStore1 } from "./print_sketch_1";
 import { createSketch as createLargeSketch1, numericParameterDefs as largeNumericParameterDefs1, initParameterStore as initLargeParameterStore1 } from "./large_sketch_1";
+import { createSketch as createLargeSketch2, numericParameterDefs as largeNumericParameterDefs2, initParameterStore as initLargeParameterStore2 } from "./large_sketch_2";
 // Define sketch types for organization
 type SketchType = "default" | "crimson";
 
@@ -22,12 +23,24 @@ let cycleSketch: () => void = () => {};
 // Create a map of sketch configurations
 const sketchConfigs = {
   default: {
-    name: "QR Code 1",
-    title: "this is a a large sketch",
-    createSketch,
+    name: "large sketch 3",
+    title: "this is a large sketch (3)",
+    createSketch: createSketch,
     parameterDefs: numericParameterDefs,
     initStore: initParameterStore
   },
+  large_2: {
+    name: "large sketch 2",
+    title: "this is a a large sketch (2)",
+    createSketch: createLargeSketch2,
+    parameterDefs: largeNumericParameterDefs2,
+    initStore: initLargeParameterStore2
+  },
+  qr1: {
+    name: "QR Code 1",
+    title: "this is a a large sketch",
+  },
+
   large1: {
     name: "Large Sketch 1",
     title: "large sketch",
@@ -113,6 +126,13 @@ let p5Instance: p5;
 function main(rootElement: HTMLElement) {
   // Create a p5 instance in instance mode
   p5Instance = new p5(createSketch(parameterStore), rootElement);
+  
+  // Ensure canvas is properly sized to container
+  window.addEventListener('resize', () => {
+    if (p5Instance && p5Instance.resizeCanvas) {
+      p5Instance.resizeCanvas(rootElement.offsetWidth, rootElement.offsetHeight);
+    }
+  });
 }
 
 // Split the React component into two parts: Title and Controls
@@ -188,7 +208,7 @@ function TitleComponent() {
   return (
     <div className="title-container">
       <h1 className="text-3xl font-bold text-center mb-2 text-gray-800">
-        {currentTitle}
+        {/* {currentTitle} */}
       </h1>
       <h3 className="text-sm font-medium text-center mb-8 text-gray-600">
         
