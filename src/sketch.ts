@@ -223,7 +223,7 @@ export function createSketch(parameterStore: ParameterStore) {
     // Grid variables moved to outer scope
     let squares: { x: number, y: number, size: number }[] = []; // Remove color from type
     let square_colors = ["#F0EEE8", "#FBF5E5", "#FFFAEC", "#F5ECD5", "#F5F5F5"];
-    const squareSize = 25;
+    const squareSize = 40;
     
     // Helper function moved to outer scope
     function isInsideAnyRegion(x: number, y: number, size: number): boolean {
@@ -346,6 +346,7 @@ export function createSketch(parameterStore: ParameterStore) {
     };
     
     p.setup = function() {
+      // Keep the fixed dimensions - this is the actual size of your visualization
       p.createCanvas(1080, 1920, p.WEBGL);
       p.translate(-p.width/2, -p.height/2); // Move to top-left for image drawing
       

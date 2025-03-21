@@ -127,12 +127,8 @@ function main(rootElement: HTMLElement) {
   // Create a p5 instance in instance mode
   p5Instance = new p5(createSketch(parameterStore), rootElement);
   
-  // Ensure canvas is properly sized to container
-  window.addEventListener('resize', () => {
-    if (p5Instance && p5Instance.resizeCanvas) {
-      p5Instance.resizeCanvas(rootElement.offsetWidth, rootElement.offsetHeight);
-    }
-  });
+  // Remove the resize event listener that's causing distortion
+  // Let the canvas maintain its natural size from sketch.ts
 }
 
 // Split the React component into two parts: Title and Controls
