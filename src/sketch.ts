@@ -365,12 +365,12 @@ export function createSketch(parameterStore: ParameterStore) {
       //   [50, 600, 350, 725]
       // ]
 
-      //
-      [2, 3, 14, 8],
-      [2, 10, 14, 15],
-      [2, 17, 14, 22],
-      [2, 24, 14, 29]
-      //
+      // //
+      // [2, 3, 14, 8],
+      // [2, 10, 14, 15],
+      // [2, 17, 14, 22],
+      // [2, 24, 14, 29]
+      // //
 
       // 4 regions, scaled for 1080 x 1920 canvas, coordinates as multiples of 20
       regions = [  // 4 regions, scaled for 1080 x 1920 canvas, coordinates as multiples of 20
