@@ -124,11 +124,22 @@ let p5Instance: p5;
 
 // Entrypoint code
 function main(rootElement: HTMLElement) {
-  // Create a p5 instance in instance mode
-  p5Instance = new p5(createSketch(parameterStore), rootElement);
+  // First, create a container element for the canvas
+  const canvasContainer = document.createElement('div');
+  canvasContainer.className = 'canvas-container';
+  rootElement.appendChild(canvasContainer);
   
-  // Remove the resize event listener that's causing distortion
-  // Let the canvas maintain its natural size from sketch.ts
+  // Create a p5 instance in instance mode, targeting our new container
+  p5Instance = new p5(createSketch(parameterStore), canvasContainer);
+  
+  // Add event listener to ensure proper centering after canvas is created
+  setTimeout(() => {
+    const canvas = document.querySelector('.p5Canvas');
+    if (canvas) {
+      // Do minimal styling on the canvas itself
+      (canvas as HTMLElement).style.display = 'block';
+    }
+  }, 100);
 }
 
 // Split the React component into two parts: Title and Controls

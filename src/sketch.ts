@@ -48,7 +48,7 @@ export const numericParameterDefs = {
     "min": 0,
     "max": 255,
     "step": 1,
-    "defaultValue": 12,
+    "defaultValue": 8,
   },
   "gridSize": {
     "min": 10,
@@ -61,19 +61,19 @@ export const numericParameterDefs = {
     "min": 0,
     "max": 50, 
     "step": 1,
-    "defaultValue": 4,
+    "defaultValue": 7,
   },
   "particleForceStrength": {
     "min": 0.01,
     "max": 0.5,
     "step": 0.01,
-    "defaultValue": 0.13,
+    "defaultValue": 0.10,
   },
   "particleMaxSpeed": {
     "min": 0.5,
     "max": 5,
     "step": 0.1,
-    "defaultValue": 2.0,
+    "defaultValue": 3.0,
   },
   "particleTrailWeight": {
     "min": 1,
@@ -86,20 +86,20 @@ export const numericParameterDefs = {
     "min": 1,
     "max": 10,
     "step": 1,
-    "defaultValue": 5, // Default to current behavior (2 lines)
+    "defaultValue": 3, // Default to current behavior (2 lines)
   },
   // New parameters for line length control
   "lineMinLength": {
     "min": 10,
     "max": 200,
     "step": 5,
-    "defaultValue": 60, // Default to current hardcoded value
+    "defaultValue": 120, // Default to current hardcoded value
   },
   "lineMaxLength": {
-    "min": 50,
-    "max": 400,
+    "min": 40,
+    "max": 600,
     "step": 5,
-    "defaultValue": 250, // Default maximum length
+    "defaultValue": 500, // Default maximum length
   },
 };
 
@@ -223,7 +223,7 @@ export function createSketch(parameterStore: ParameterStore) {
     // Grid variables moved to outer scope
     let squares: { x: number, y: number, size: number }[] = []; // Remove color from type
     let square_colors = ["#F0EEE8", "#FBF5E5", "#FFFAEC", "#F5ECD5", "#F5F5F5"];
-    const squareSize = 20;
+    const squareSize = 40;
     
     // Helper function moved to outer scope
     function isInsideAnyRegion(x: number, y: number, size: number): boolean {
@@ -239,7 +239,7 @@ export function createSketch(parameterStore: ParameterStore) {
     }
 
     // Function to generate a single line within a region
-    function generateLine(region: number[]): [number, number, number, number, number, number, number] {
+    function generateLine(region: number[], currentSimulatedTime: number): [number, number, number, number, number, number, number] {
       const minLineLength = parameterStore.lineMinLength;
       const maxLineLength = parameterStore.lineMaxLength;
       
@@ -266,14 +266,15 @@ export function createSketch(parameterStore: ParameterStore) {
         y2 = p.random(region[1] + 25, region[3] - 25);
       }
       
-      // Generate random delay between 500-10000ms
-      const delay = p.random(500, 1000);
+      // Generate random delay between 500-1000ms
+      const delay = p.random(100, 400);
       
-      // Generate random duration between 3000-9000ms
+      // Generate random duration between 1000-4000ms
+      // const duration = p.random(1000, 4000);
       const duration = p.random(1000, 4000);
       
-      // Current time in milliseconds
-      const startTime = p.millis();
+      // Use the provided simulated time instead of p.millis()
+      const startTime = currentSimulatedTime;
       
       return [x1, y1, x2, y2, delay, duration, startTime];
     }    
@@ -347,14 +348,23 @@ export function createSketch(parameterStore: ParameterStore) {
     
     p.setup = function() {
       // Keep the fixed dimensions - this is the actual size of your visualization
-      p.createCanvas(1080, 1920, p.WEBGL);
+      p.createCanvas(1280, 2000, p.WEBGL);
+      
+      // Make sure we're using the right coordinate system
       p.translate(-p.width/2, -p.height/2); // Move to top-left for image drawing
       
+      // Fix any potential canvas styling issues
+      const canvas = document.querySelector('.p5Canvas');
+      if (canvas) {
+        (canvas as any).style.margin = '0 auto';
+        (canvas as any).style.display = 'block';
+      }
+      
       // Create particle layer with same dimensions and renderer
-      particleLayer = p.createGraphics(1080, 1920, p.WEBGL);
+      particleLayer = p.createGraphics(1280, 2000, p.WEBGL);
       particleLayer.setAttributes({ alpha: true });
       particleLayer.translate(-p.width/2, -p.height/2);
-      lineLayer = p.createGraphics(1080, 1920, p.WEBGL);   
+      lineLayer = p.createGraphics(1280, 2000, p.WEBGL);   
       lineLayer.setAttributes({ alpha: true });
       lineLayer.translate(-p.width/2, -p.height/2);
 
@@ -374,10 +384,10 @@ export function createSketch(parameterStore: ParameterStore) {
 
       // 4 regions, scaled for 1080 x 1920 canvas, coordinates as multiples of 20
       regions = [  // 4 regions, scaled for 1080 x 1920 canvas, coordinates as multiples of 20
-        [120, 200, 960, 500],   // Region 1: 800px width × 300px height
-        [120, 580, 960, 880],   // Region 2: 800px width × 300px height
-        [120, 960, 960, 1260], // Region 3: 800px width × 300px height
-        [120, 1320, 960, 1620]  // Region 4: 800px width × 300px height
+        [120, 160, 1160, 520],   // Region 1: 800px width × 300px height
+        [120, 600, 1160, 960],   // Region 2: 800px width × 300px height
+        [120, 1040, 1160, 1400], // Region 3: 800px width × 300px height
+        [120, 1480, 1160, 1840]  // Region 4: 800px width × 300px height
       ]
       lines = [];
       lineStepFactor = [];
@@ -391,9 +401,9 @@ export function createSketch(parameterStore: ParameterStore) {
         // Generate lines for this region
         for (let lineIndex = 0; lineIndex < linesPerRegion; lineIndex++) {
           // Generate line and add to lines array
-          const line = generateLine(region);
+          const line = generateLine(region, startTime);
           lines.push(line);
-          lineStepFactor.push(p.random(1, 5));
+          lineStepFactor.push(p.random(20, 80));
         }
       }
 
@@ -440,9 +450,9 @@ export function createSketch(parameterStore: ParameterStore) {
     p.draw = function() {
       frameCount++;
 
-      // Simulate consistent 60fps timing instead of using actual millis
-      const frameRate = 30; // Simulate 60fps
-      const deltaTimePerFrame = 1000 / frameRate; // ms per frame at 60fps
+      // Make comment match the actual value
+      const frameRate = 30; // Simulate 30fps
+      const deltaTimePerFrame = 1000 / frameRate;
       const currentTime = frameCount * deltaTimePerFrame;
       
       p.translate(-p.width/2, -p.height/2);
@@ -527,9 +537,9 @@ export function createSketch(parameterStore: ParameterStore) {
       for (let r = 0; r < regions.length; r++) {
         // If we need more lines in this region
         while (linesInRegion[r] < desiredLinesPerRegion) {
-          const newLine = generateLine(regions[r]);
+          const newLine = generateLine(regions[r], currentTime);
           lines.push(newLine);
-          lineStepFactor.push(p.random(10, 40));
+          lineStepFactor.push(p.random(20, 80));
           lineColors.push(p.lerpColor(p.color(0), p.color("#2C3639"), p.random(0, 1)));
           linesInRegion[r]++;
         }
@@ -573,9 +583,9 @@ export function createSketch(parameterStore: ParameterStore) {
           
           // If we found the region, generate a new line
           if (lineRegion) {
-            const newLine = generateLine(lineRegion);
+            const newLine = generateLine(lineRegion, currentTime);
             lines[l] = newLine;
-            lineStepFactor[l] = p.random(10, 40);
+            lineStepFactor[l] = p.random(20, 80);
             
             // Update local variables to the new line
             x1 = newLine[0];
