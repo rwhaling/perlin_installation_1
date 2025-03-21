@@ -42,13 +42,13 @@ export const numericParameterDefs = {
     "min": 0,
     "max": 255,
     "step": 1,
-    "defaultValue": 24,
+    "defaultValue": 3,
   },
   "trailTransparency": {
     "min": 0,
     "max": 255,
     "step": 1,
-    "defaultValue": 8,
+    "defaultValue": 12,
   },
   "gridSize": {
     "min": 10,
@@ -67,7 +67,7 @@ export const numericParameterDefs = {
     "min": 0.01,
     "max": 0.5,
     "step": 0.01,
-    "defaultValue": 0.15,
+    "defaultValue": 0.13,
   },
   "particleMaxSpeed": {
     "min": 0.5,
@@ -86,20 +86,20 @@ export const numericParameterDefs = {
     "min": 1,
     "max": 10,
     "step": 1,
-    "defaultValue": 2, // Default to current behavior (2 lines)
+    "defaultValue": 3, // Default to current behavior (2 lines)
   },
   // New parameters for line length control
   "lineMinLength": {
-    "min": 50,
+    "min": 10,
     "max": 200,
     "step": 5,
     "defaultValue": 20, // Default to current hardcoded value
   },
   "lineMaxLength": {
-    "min": 100,
+    "min": 50,
     "max": 400,
     "step": 5,
-    "defaultValue": 150, // Default maximum length
+    "defaultValue": 120, // Default maximum length
   },
 };
 
@@ -127,7 +127,7 @@ export function createSketch(parameterStore: ParameterStore) {
     let startTime = p.millis();
     // Create a separate graphics layer for particles
     let particleLayer: p5.Graphics;
-    let gridLayer: p5.Graphics;
+    let lineLayer: p5.Graphics;
     let regions: any[];
     let lines: any[];
     let lineStepFactor: any[];
@@ -353,7 +353,9 @@ export function createSketch(parameterStore: ParameterStore) {
       particleLayer = p.createGraphics(400, 800, p.WEBGL);
       particleLayer.setAttributes({ alpha: true });
       particleLayer.translate(-p.width/2, -p.height/2);
-      gridLayer = p.createGraphics(400, 800, p.WEBGL);      
+      lineLayer = p.createGraphics(400, 800, p.WEBGL);   
+      lineLayer.setAttributes({ alpha: true });
+      lineLayer.translate(-p.width/2, -p.height/2);
 
       regions = [  // 4 regions, 300 x 125, 50px padding l/r, 50x padding t/b
         [50, 75, 350, 200],
@@ -391,7 +393,10 @@ export function createSketch(parameterStore: ParameterStore) {
       // let's populate lineColors with random lerps between black and 4C585B
       lineColors = [];
       for (let i = 0; i < lines.length; i++) {
-        lineColors.push(p.lerpColor(p.color(0), p.color("#2C3639"), p.random(0, 1)));
+        lineColors.push(p.color(0));
+        lineColors.push(p.lerpColor(p.color(0), p.color("#363030"), p.random(0, 1)));
+
+        // lineColors.push(p.lerpColor(p.color(0), p.color("#2C3639"), p.random(0, 1)));
       }
       
       // Generate grid squares positions only - moved from draw()
@@ -441,6 +446,15 @@ export function createSketch(parameterStore: ParameterStore) {
       particleLayer.rect(0,0, particleLayer.width, particleLayer.height);
       particleLayer.pop();
 
+      lineLayer.push();
+      lineLayer.noStroke();
+      lineLayer.blendMode(p.REMOVE as any);
+      lineLayer.fill("#000000" + parameterStore.gridTransparency.toString(16).padStart(2, '0'));
+      lineLayer.rect(0,0, lineLayer.width, lineLayer.height);
+      lineLayer.blendMode(p.BLEND as any);
+      lineLayer.pop();
+
+
       // draw a rectangle around each region
       for (let r = 0; r < regions.length; r++) {
         let region = regions[r];
@@ -451,7 +465,7 @@ export function createSketch(parameterStore: ParameterStore) {
         p.blendMode(p.BLEND as any);
         p.stroke("#2C3639");
         p.strokeWeight(2);
-        p.fill("#FBF8EF28")
+        p.fill("#FBF8EF48")
 
         p.rect(region[0], region[1], region[2] - region[0], region[3] - region[1]);
       }
@@ -579,7 +593,7 @@ export function createSketch(parameterStore: ParameterStore) {
           // Only draw the steps that are new since last frame
           for (let i = prevStepsDrawn; i < currentStepsToDraw; i++) {
             drawLineStep(
-              p, 
+              lineLayer, 
               x1, y1, x2, y2, 
               i, steps, 
               time, 
@@ -686,6 +700,9 @@ export function createSketch(parameterStore: ParameterStore) {
       p.imageMode(p.CORNER);
       p.blendMode(p.BLEND as any);
       p.image(particleLayer, 0, 0, p.width, p.height);
+      p.blendMode(p.BLEND as any);
+      p.image(lineLayer, 0, 0, p.width, p.height);
+      p.blendMode(p.BLEND as any);
       p.pop();
       
       prevTime = currentTime;
