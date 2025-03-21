@@ -223,7 +223,7 @@ export function createSketch(parameterStore: ParameterStore) {
     // Grid variables moved to outer scope
     let squares: { x: number, y: number, size: number }[] = []; // Remove color from type
     let square_colors = ["#F0EEE8", "#FBF5E5", "#FFFAEC", "#F5ECD5", "#F5F5F5"];
-    const squareSize = 40;
+    const squareSize = 20;
     
     // Helper function moved to outer scope
     function isInsideAnyRegion(x: number, y: number, size: number): boolean {
@@ -358,11 +358,26 @@ export function createSketch(parameterStore: ParameterStore) {
       lineLayer.setAttributes({ alpha: true });
       lineLayer.translate(-p.width/2, -p.height/2);
 
+      // regions = [  // 4 regions, 300 x 125, 50px padding l/r, 50x padding t/b
+      //   [50, 75, 350, 200],
+      //   [50, 250, 350, 375],
+      //   [50, 425, 350, 550],
+      //   [50, 600, 350, 725]
+      // ]
+
+      //
+      [2, 3, 14, 8],
+      [2, 10, 14, 15],
+      [2, 17, 14, 22],
+      [2, 24, 14, 29]
+      //
+
+      // 4 regions, scaled for 1080 x 1920 canvas, coordinates as multiples of 20
       regions = [  // 4 regions, scaled for 1080 x 1920 canvas, coordinates as multiples of 20
-        [140, 160, 940, 460],   // Region 1: 800px width × 300px height
-        [140, 600, 940, 900],   // Region 2: 800px width × 300px height
-        [140, 1040, 940, 1340], // Region 3: 800px width × 300px height
-        [140, 1480, 940, 1780]  // Region 4: 800px width × 300px height
+        [120, 200, 960, 500],   // Region 1: 800px width × 300px height
+        [120, 580, 960, 880],   // Region 2: 800px width × 300px height
+        [120, 960, 960, 1260], // Region 3: 800px width × 300px height
+        [120, 1320, 960, 1620]  // Region 4: 800px width × 300px height
       ]
       lines = [];
       lineStepFactor = [];
