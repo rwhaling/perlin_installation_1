@@ -86,7 +86,7 @@ export const numericParameterDefs = {
     "min": 1,
     "max": 10,
     "step": 1,
-    "defaultValue": 3, // Default to current behavior (2 lines)
+    "defaultValue": 4, // Default to current behavior (2 lines)
   },
   // New parameters for line length control
   "lineMinLength": {
@@ -441,7 +441,7 @@ export function createSketch(parameterStore: ParameterStore) {
       frameCount++;
 
       // Simulate consistent 60fps timing instead of using actual millis
-      const frameRate = 60; // Simulate 60fps
+      const frameRate = 30; // Simulate 60fps
       const deltaTimePerFrame = 1000 / frameRate; // ms per frame at 60fps
       const currentTime = frameCount * deltaTimePerFrame;
       
